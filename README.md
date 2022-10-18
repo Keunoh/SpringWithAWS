@@ -1,5 +1,7 @@
 # SpringWithAWS
 
+---
+
 1. TDD와 단위테스트는 다르다.
    TDD는 테스트 먼저 작성 -> 테스트 통과한 프로덕션 코드 작성
    -> 프로덕션 코드 리팩토링
@@ -20,3 +22,7 @@
    :여러 스프링 테스트 어노테이션 중, Web(Spring MVC)에 집중할 수 있는
    어노테이션이다. 선언할 경우 @Controller, @ControllerAdvice등 사용이
    가능하다. 단, @Service, @Component, @Repository 등은 사용할 수 없다.
+
+5. @RequiredArgsConstructor
+       : 선언된 모든 final 필드가 포함된 생성자를 생성해 준다.
+       final이 없는 필드는 생성자에 포함되지 않는다.
