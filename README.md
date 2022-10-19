@@ -33,9 +33,9 @@
 ![2022-10-19(spring web layer)](https://user-images.githubusercontent.com/96904103/196657295-4d42733d-c022-43d1-8e72-0b3a6bcd5c89.png)
 
 ###Service Layer 오해###
-	: 많은 분들이 오해하고 계신 것이, Service에서 비지니스 로직을 처리해야
-	한다는 것입니다. 하지만 전혀 그렇지 않습니다. Service는 트랜잭션,
-	도메인 간 순서 보장의 역할만 합니다
+	: 많은 분들이 오해하고 계신 것이, Service에서 비지니스 로직을    
+	처리해야 한다는 것입니다. 하지만 전혀 그렇지 않습니다. Service는    
+	트랜잭션, 도메인 간 순서 보장의 역할만 합니다
 
 1. Web Layer
    - 흔히 사용하는 컨트롤러(@Controller)와 JSP/Freemarker 등의 뷰 템플릿 영역입니다.
