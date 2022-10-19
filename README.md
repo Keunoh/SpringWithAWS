@@ -36,3 +36,11 @@
    - 흔히 사용하는 컨트롤러(@Controller)와 JSP/Freemarker 등의 뷰 템플릿 영역입니다.
    - 이외에도 필터(@Filter), 인터셉터, 컨트롤러 어드바이스(@ControllerAdvice) 등 외부    
      요청과 응답에 대한 전반적인 영역을 이야기합니다.
+
+2. Service Layer 
+   - @Service에 사용되는 서비스 영역입니다. 일반적으로 Cotroller와 Dao의 중간 영역에서   
+   사용됩니다. @Transcational이 사용되어야 하는 영역이기도 합니다.
+
+3. Repository Layer
+   - Database와 같이 데이터 저장소에 접근하는 영역입니다. Dao(Data Access Object)영역   
+   으로 이해하시면 쉬울 것입니다.
