@@ -46,7 +46,23 @@
 9. @Transcational
    :해당 애노테이션이 붙은 메서드는 메서드가 포함하고 있는 작업 중에
    하나라도 실패할 경우 전체 작업을 취소한다.
-   관련 URL : https://tecoble.techcourse.co.kr/post/2021-05-25-transactional/       
+   관련 URL : https://tecoble.techcourse.co.kr/post/2021-05-25-transactional/
+
+10. @MappedSuperclass
+    : JPA Entity 클래스들이 BaseTimeEntity를 상속할 경우 필드들
+    (createdDate, modifiedDate)도 컬럼으로 인식하도록 합니다.
+
+11. @EntityListeners(AuditingEntityListener.class)
+    :BaseTimeEntity 클래스에 Auditing 기능을 포함시킵니다.
+
+12. @CreatedDate
+    : Entity가 생성되어 저장될 때 시간이 자동 저장됩니다.
+
+13. @LastModifiedDate
+    : 조회한 Entity의 값을 변경할 때 시간이 자동 저장됩니다.
+
+14. @EnableJpaAuditing
+    : JPA Auditing 활성화, 최상위 애플리케이션 클래스에 추가
 ---
 # Spring Web Layer
 ![2022-10-19(spring web layer)](https://user-images.githubusercontent.com/96904103/196657295-4d42733d-c022-43d1-8e72-0b3a6bcd5c89.png)
@@ -96,3 +112,52 @@
 
 2. 더티 체킹(Dirty Checking)
     관련 URL : https://jojoldu.tistory.com/415
+
+---
+# Template Engine
+
+1. 템플릿 엔진
+   : 지정된 템플릿 양식과 데이터가 합쳐져 HTML 문서를 출력하는
+   소프트웨어를 이야기합니다.
+   JSP, Freemarker는 서버 템플릿 엔진,
+   리액트, 뷰는 클라이언트 템플릿 엔진이라고 불린다.
+   자바스크립트는 브라우저 위에서 작동합니다.
+   서버 템플릿 엔진은 서버에서 구동됩니다.
+
+2. 필자(이동욱)가 생각하는 템플릿 엔진들의 단점은 다음과 같습니다.
+    - Thymeleaf : 스프링 진영에서 적극적으로 밀고 있지만 문법이
+      어렵습니다. HTML 태그에 속성으로 템플릿 기능을 사용하는 방식이
+      기존 개발자분들께 높은 허들로 느껴지는 경우가 많습니다. 실제로
+      사용해 본 분들은 자바스크립트 프레임워크를 배우는 기분이라고
+      후기를 이야기하기도 합니다.
+
+3. mustache(템플릿 엔진) 사용의 장점
+   : 문법이 다른 템플릿 엔진보다 심플합니다.
+   로직코드를 사용할 수 없어 View의 역할과 서버의 역할이 명확히
+   분리됩니다.
+   Mustache.js와 Mustache.java 2가지가 다 있어, 하나의 문법으로
+   클라이언트/서버 템플릿을 모두 사용합니다.
+
+4. mustache의 폴더 기본 위치
+   : src/main/resources/templates <- 이 위치에 머스테치 파일을 두면
+   스프링 부트에서 자동으로 로딩합니다.
+
+5. 페이지 로딩속도
+   : 속도를 높이기 위하여 css는 header에, js는 footer 두는게 좋다.
+
+6. 브라우저의 스코프
+   : 브라우저의 스코프는 공용 공간으로 쓰이기 때문에 나중에 로딩된
+   js의 init, save가 먼저 로딩된 js의 function을 덮어쓰게 됩니다.
+   여러 사람이 참여하는 프로젝트에서는 중복된 함수이름은 자주 발생
+   할 수 있습니다. 모든 function 이름을 확인하면서 만들 수는 없습니다.
+   이 문제를 피하려고 index.js만의 유효범위를 만들어서 사용합니다.
+   이렇겧면 index 객체 안에서만 function이 유효하기 때문에 다른
+   js와 겹칠 위험이 사라집니다.
+
+7. 바닐라 자바스크립트
+   : 플러그인이나, 라이브러리를 사용하지 않은 순수 자바스크립트를
+   이야기합니다. 외국에서는 바닐라(Vanilla) = 일반(Plain)을 의미함
+
+8. static폴더
+   : 스프링부트는 기본적으로 src/main/resources/static에 위치한
+   자바스크립트, CSS, 이미지 등 정적 파일들은 URL에서 /로 설정됩니다.
