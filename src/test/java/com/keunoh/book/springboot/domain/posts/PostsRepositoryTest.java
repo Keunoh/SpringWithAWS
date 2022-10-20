@@ -68,4 +68,27 @@ public class PostsRepositoryTest {
         assertThat(posts.getCreatedDate()).isAfter(now);
         assertThat(posts.getModifiedDate()).isAfter(now);
     }
+
+    @Test
+    public void 게시글_삭제() {
+        //given
+        String title = "title";
+        String content = "content";
+        String author = "author";
+
+        long beforeLength = postsRepository.count();
+
+        postsRepository.save(Posts.builder()
+                .title(title)
+                .content(content)
+                .author(author)
+                .build());
+
+        //when
+        postsRepository.deleteAll();
+        long afterLength = postsRepository.count();
+
+        //then
+        assertThat(beforeLength).isEqualTo(afterLength);
+    }
 }
