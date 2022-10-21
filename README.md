@@ -1,5 +1,5 @@
 # SpringWithAWS
-
+- 출처 : 스프링 부트와 AWS로 혼자 구현하는 웹 서비스(이동욱 지음)
 ---
 
 1. TDD와 단위테스트는 다르다.
@@ -66,7 +66,7 @@
 ---
 # Spring Web Layer
 ![2022-10-19(spring web layer)](https://user-images.githubusercontent.com/96904103/196657295-4d42733d-c022-43d1-8e72-0b3a6bcd5c89.png)
-### 출처 : 스프링 부트와 AWS로 혼자 구현하는 웹 서비스(이동욱 지음)
+
 
 ###Service Layer 오해###
 	: 많은 분들이 오해하고 계신 것이, Service에서 비지니스 로직을
@@ -161,3 +161,115 @@
 8. static폴더
    : 스프링부트는 기본적으로 src/main/resources/static에 위치한
    자바스크립트, CSS, 이미지 등 정적 파일들은 URL에서 /로 설정됩니다.
+
+9. Basic Information
+   : 자바스크립트는 브라우저에 내장되어있다!
+   Browser는 HTML을 불러오고 HTML은 CSS와 JS를 불러온다.
+   HTML이 접착제 느낌.
+
+---
+# Social Login
+
+1. 소셜 로그인 기능
+   : 많은 서비스에서 로그인 기능을 id/password 방식보다는 구글,
+   페이스북, 네이버 로그인과 같은 소셜 로그인 기능을 사용한다.
+   이는 로그인을 직접 구현할 경우 배보다 배꼽이 커지는 경우가
+   많기 때문이다(필자 생각)
+
+2. application-oauth.properties
+   :이 파일에서 scope는 기본 값으로 openid, profile, email이다.
+   강제로 profile, email을 등록한 이유는 openid라는 scope가 있으면
+   Open Id Provider로 인식하기 때문입니다. 이렇게 되면 OpenId Provider
+   인 서비스(구글)와 그렇지 않은 서비스(네비서/카카오 등)로 나눠서
+   각각 OAuth2Service를 만들어야합니다. 하나의 OAuth2Service로
+   사용하기 위해 일부러 openid scope를 빼고 등록합니다.
+
+3. OAuth2
+   :OAuth(Open Authentication, Open Authorization)는 사용자 리소스를
+   관리하는 서비스(구글, 페이스북 등)에서 제 3의 애플리케이션에게
+   사용자의 패스워드를 제공 없이 인증, 인가할 수 있는 인증 관련
+   표준 프로토콜이다. OAuth 이전에 사용자의 권한을 위임받는 방식은
+   사용자가 이용하는 서비스의 계정/패스워드를 제공받는 방식이었다.
+   이는 패스워드 유출 뿐 아니라 권한을 위임받는 애플리케이션이 필요
+   이상으로 계정에 대한 모든 권한을 획득하게 되는 등 다양한 문제점이
+   존재한다. OAuth인증은 API를 제공하는 서버에서 사용자 인증 및 권한
+   부여를 진행하고 이에 대한 'Access Token'을 발급하는 방식을 제공하며
+   이러한 문제들을 해결할 수 있다.
+   OAuth2는 OAuth1 프로토콜의 복잡한 인증방식을 단순화했다.
+   관련 URL : https://mydevstorage.tistory.com/2
+
+4. OAuth2 dependency
+   : spring-boot-starter-oauth2-client는 소셜 로그인 등 클라이언트
+   입장에서 소셜 기능 구현 시 필요한 의존성입니다.
+   spring-boot-starter-oauth2-client와 spring-security-oauth2-jose를
+   기본으로 관리해줍니다.
+
+
+5. @EnableWebSecurity
+   : Spring Security 설정들을 활성화시켜 줍니다.
+
+6. csrf().disable().headers().frameOptions().disable()
+   :h2-console 화면을 사용하기 위해 해당 옵션들을 disable합니다.
+
+7. authorizeRequests
+   :URL별 권한 관리를 설정하는 옵션의 시작점입니다. authorizeRequests가
+   선언되어야만 antMatchers옵션을 사용할 수 있습니다.
+
+8. antMatchers
+   :권한 관리 대상을 지정하는 옵션입니다. URL, HTTP 메소드별로
+   관리가 가능합니다. "/"등 지정된 URL들은 permitAll()옵션을 통해
+   전체 열람 권한을 주었습니다. "/api/v1/**"주소를 가진 API는
+   USER권한을 가진 사람만 가능하도록 했습니다.
+
+9. anyRequest
+   :설정된 값들 이외 나머지 URL들을 나타냅니다. 여기서는 authenticated()을
+   추가하여 나머지 URL들은 모두 인증된 사용자들에게만 허용하게 합니다.
+   인증된 사용자 즉, 로그인한 사용자들을 이야기합니다.
+
+10. logout().logoutSuccessUrl("/")
+    :로그아웃 기능에 대한 여러 설정의 진입점입니다. 로그아웃 성공 시 /
+    주소로 이동합니다.
+
+11. oauth2Login
+    :OAuth2 로그인 기능에 대한 여러 설정의 진입점입니다.
+
+12. userInfoEndpoint
+    :OAuth2 로그인 성공 이후 사용자 정보를 가져올 때 설정들을 담당
+
+13. userService
+    :소셜 로그인 성공 시 후속 조치를 진행할 UserService 인터페이스의
+    구현체를 등록합니다. 리소스 서버(즉, 소셜 서비스들)에서 사용자
+    정보를 가져온 상태에서 추가로 진행하고자 하는 기능을 명시할 수 있습니다.
+
+- CustomOAuth2UserService 클래스 설명  
+// delegate : 대리자, 대표, 대리하다, 파견하다.
+
+1. registrationId
+   :현재 로그인 진행 중인 서비스를 구분하는 코드입니다. 지금은 구글만
+   사용하는 불필요한 값이지만, 이후 네이버 로그인 연동 시에 네이버
+   로그인인지, 구글 로그인인지 구분하기 위해 사용합니다.
+
+2. userNameAttributeName
+   :OAuth2 로그인 진행 시 키가 되는 필드값을 이야기합니다. PK와 같은
+   의미입니다. 구글의 경우 기본적으로 코드를 지원하지만, 네이버 카카오
+   등은 기본 지원하지 않습니다. 구글의 기본 코드는 "sub"입니다.
+   이후 네이버 로그인과 구글 로그인을 동시에 지원할 때 사용합니다.
+
+3. OAuthAttributes
+   :OAuth2UserService를 통해 가져온 OAuth2User의 attribute를 담을
+   클래스입니다. 이후 네이버 등 다른 소셜 로그인도 이 클래스를 사용합니다.
+
+4. SessionUser
+   :세션에서 사용자 정보를 저장하기 위한 Dto 클래스입니다.
+
+- OAuthAttributes 클래스 설명
+
+1. of()
+   :OAuth2User에서 반환하는 사용자 정보는 Map이기 때문에 값 하나하나를
+   변환해야만 합니다.
+
+2. toEntity()
+   :User 엔티티를 생성합니다. OAuthAttributes에서 엔티티를 생성하는
+   시점은 처음 가입할 때 입니다. 가입할 때의 기본 권한을 GUEST로 주기
+   위해서 role 빌더값에는 Role.GUEST를 사용합니다. OAuthAttributes 클래스
+   생성이 끝났으면 같은 패키지에 SessionUser 클래스를 생성합니다. 
