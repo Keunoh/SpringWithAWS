@@ -63,6 +63,16 @@
 
 14. @EnableJpaAuditing
     : JPA Auditing 활성화, 최상위 애플리케이션 클래스에 추가
+
+15. @Enumerated(EnumType.STRING)
+   : JPA로 데이터베이스로 저장할 때 Enum값을 어떤 형태로 저장할지를
+   결정합니다. 기본적으로는 int로 된 숫자가 저장됩니다. 숫자로 저장되면
+   데이터베이스로 확인할 때 그 값이 무슨 코드를 의미하는지 알 수가
+   없습니다. 그래서 문자열 (EnumType.STRING)으로 저장될 수 있도록
+   선언합니다.
+
+16. @EnableWebSecurity
+   : Spring Security 설정들을 활성화시켜 줍니다.
 ---
 # Spring Web Layer
 ![2022-10-19(spring web layer)](https://user-images.githubusercontent.com/96904103/196657295-4d42733d-c022-43d1-8e72-0b3a6bcd5c89.png)
