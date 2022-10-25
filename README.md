@@ -294,3 +294,24 @@
 
 3. src/main 환경과 src/test 환경의 차이
    : 둘은 본인만의 환경 구성을 가집니다. 다만, src/main/resources/application .properties가 테스트 코드를 수행할 때도 적용되는 이유는 test에 application .properties가 없으면 main의 설정을 그대로 가져오기 때문입니다. 다만, 자동으로 가져오는 옵션의 범위는 application.properties 파일까지입니다. 즉, application-oauth.properties는 test에 파일이 없다고 가져오는 파일은 아니라는 점입니다.
+
+---
+# CI와 CD
+코드 버전 관리를 하는 VCS 시스템(Git, SVN 등)에 PUSH가 되면 자동으로 테스트와 빌드가 수행되어 안정적인 배포 파일을 만드는 과정을 CI	(Continuous Integration - 지속적 통합)라고 하며, 이 빌드 결가를 자동으로 	운영 서버	에 무중단 배포까지 진행되는 과정을 CD(Continuous Deployment - 지속적인 배포)라고 합니다.  
+관련 URL : http://bit.ly/2Yv0vFp
+
+1. .travis.yml
+   branches
+   : Travis CI를 어느 브랜치가 푸시될 때 수행할지 지정합니다.
+   현재 옵션은 오직 master 브랜치에 push될 때만 수행합니다.
+
+   cache
+   : 그레이들을 통해 의존성을 받게 되면 이를 해당 디렉토리에 캐시하여, 같은
+   의존성은 다음 배포 때부터 다시 받지 않도록 설정합니다.
+
+   script
+   : master 브랜치에 푸시되었을 때 수행하는 명령어입니다.
+   여기서는 프로젝트 내부에 둔 gradlew을 통해 clean & build를 수행합니다.
+
+   notifications
+   : Travis CI 실행 완료 시 자동으로 알람이 가도록 설정합니다.
