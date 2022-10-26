@@ -300,6 +300,8 @@
 코드 버전 관리를 하는 VCS 시스템(Git, SVN 등)에 PUSH가 되면 자동으로 테스트와 빌드가 수행되어 안정적인 배포 파일을 만드는 과정을 CI	(Continuous Integration - 지속적 통합)라고 하며, 이 빌드 결가를 자동으로 	운영 서버	에 무중단 배포까지 진행되는 과정을 CD(Continuous Deployment - 지속적인 배포)라고 합니다.  
 관련 URL : http://bit.ly/2Yv0vFp
 
+![2022-10-26(travis_ci)](https://user-images.githubusercontent.com/96904103/197960112-31fedef8-05de-4071-b965-5ecb0784dfc6.jpg)
+
 1. .travis.yml
    branches
    : Travis CI를 어느 브랜치가 푸시될 때 수행할지 지정합니다.
@@ -311,7 +313,27 @@
 
    script
    : master 브랜치에 푸시되었을 때 수행하는 명령어입니다.
-   여기서는 프로젝트 내부에 둔 gradlew을 통해 clean & build를 수행합니다.
+   : 여기서는 프로젝트 내부에 둔 gradlew을 통해 clean & build를 수행합니다.
 
    notifications
    : Travis CI 실행 완료 시 자동으로 알람이 가도록 설정합니다.
+
+   before_deploy
+   : deploy 명령어가 실행되기 전에 수행됩니다.
+   : CodeDeploy는 Jar 파일은 인식하지 못 하므로 Jar+기타 설정 파일들을 모아 압축(zip)합니다.
+
+   zip -r SpringWithAWS
+   : 현재 위치의 모든 파일을 SpringWithAWS 이름으로 압축(zip)합니다.
+   : 명령어의 마지막 위치는 본인의 프로젝트 이름이어야 합니다.
+
+   mkdir -p deploy
+   : deploy라는 디렉토리를 Travis CI가 실행 중인 위치에서 생성합니다.
+
+   mv SpringWithAWS.zip deploy/SpringWithAWS.zip
+   : SpringWithAWS.zip 파일을 deploy/SpringWithAWS.zip으로 이동시킵니다.
+
+   deploy
+   : S3로 파일 업로드 혹은 CodeDeploy로 배포 등 외부 서비스와 연동될 행위들을 선언합니다.
+
+   local_dir: deploy
+   : 앞에서 생성한 deploy 디렉토리를 지정합니다. 해당 위치의 파일들만 S3로 전송합니다.
