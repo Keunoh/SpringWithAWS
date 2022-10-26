@@ -369,3 +369,26 @@
 - overwrite
    - 기존에 파일들이 있으면 덮어쓸지를 결정합니다.
    - 현재 yes라고 했으니 파일들을 덮어쓰게 됩니다.
+
+- permissions
+    - CodeDeploy에서 EC2 서버로 넘겨준 파일들을 모두 ec2-user 권한을 갖도록 합니다.
+- hooks
+    - CodeDeploy 배포 단계에서 실행할 명령어를 지정합니다.
+    - ApplicationStart라는 단계에서 deploy.sh를 ec2-user 권한으로 실행하게 합니다.
+    - timeout:60 으로 스크립트 실행 60초 이상 수행되면 실패가 됩니다.(무한정 기다릴 수 없으니 시간 제한을 둬야만 합니다.)
+
+4. deploy.sh
+- CURRENT_PID
+    - 현재 수행 중인 스프링 부트 애플리케이션의 프로세스 ID를 찾습니다.
+    - 실행 중이면 종료하기 위해서입니다.
+    - 스프링 부트 애플리케이션 이름(SpringWithAWS)으로 된 다른 프로그램들이 있을 수 있어 SpringWithAWS로 된 jar(pgrep -fl SpringWithAWS | grep.jar)프로세스를 찾은 뒤 ID를 찾습니다( | awk '{print $1}')
+
+- chmod +x $JAR_NAME
+    - Jar 파일은 실행 권한이 없는 상태입니다.
+    - nohup으로 실행할 수 있게 실행 권한을 부여합니다.
+
+- $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &
+    - nohup 실행 시 CodeDeploy는 무한 대기합니다.
+    - 이 이슈를 해결하기 위해 nohup.out 파일을 표준 입출력용으로별도로 사용합니다.
+    - 이렇게 하지 않으면 nohup.out 파일이 생기지 않고, CodeDeploy 로그에 표준 입출력이 출력됩니다.
+    - nohup이 끝나기 전까지 CodeDeploy도 끝나지 않으니 꼭 이렇게 해야만 합니다.
