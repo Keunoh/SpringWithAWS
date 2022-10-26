@@ -302,38 +302,70 @@
 
 ![2022-10-26(travis_ci)](https://user-images.githubusercontent.com/96904103/197960112-31fedef8-05de-4071-b965-5ecb0784dfc6.jpg)
 
-1. .travis.yml
-   branches
-   : Travis CI를 어느 브랜치가 푸시될 때 수행할지 지정합니다.
+1. AWS 배포 삼형제
+- Code Commit
+   - 깃허브와 같은 코드 저장소의 역할을 합니다.
+   - 프라이빗 기능을 지원한다는 강점이 있지만, 현재 깃허브에서 무료로 프라이	빗 지원을 하고 있어서 거의 사용되지 않습니다.
+- Code Build
+   - Travis CI와 마찬가지로 빌드용 서비스입니다.
+   - 멀티 모듈을 배포해야 하는 경우 사용해 볼만하지만, 규모가 있는 서비스에	서는 대부분 젠킨스/팀시티 등을 이용하니 이것 역시 사용할 일이 거의 없습니	다.
+- CodeDeploy
+   - AWS의 배포 서비스입니다.
+   - 앞에서 언급한 다른 서비스들은 대체재가 있고, 딱히 대체재보다 나은 점이
+     없지만, CodeDeploy는 대체재가 없습니다.
+   - 오토 스케일링 그룹 배포, 블루 그린 배포, 롤링 배포, EC2 단독 배포 등 많은
+     기능을 지원합니다.
+
+2. travis.yml
+- branches
+   - Travis CI를 어느 브랜치가 푸시될 때 수행할지 지정합니다.
    현재 옵션은 오직 master 브랜치에 push될 때만 수행합니다.
 
-   cache
-   : 그레이들을 통해 의존성을 받게 되면 이를 해당 디렉토리에 캐시하여, 같은
+- cache
+   - 그레이들을 통해 의존성을 받게 되면 이를 해당 디렉토리에 캐시하여, 같은
    의존성은 다음 배포 때부터 다시 받지 않도록 설정합니다.
 
-   script
-   : master 브랜치에 푸시되었을 때 수행하는 명령어입니다.
-   : 여기서는 프로젝트 내부에 둔 gradlew을 통해 clean & build를 수행합니다.
+- script
+   - master 브랜치에 푸시되었을 때 수행하는 명령어입니다.
+   - 여기서는 프로젝트 내부에 둔 gradlew을 통해 clean & build를 수행합니다.
 
-   notifications
-   : Travis CI 실행 완료 시 자동으로 알람이 가도록 설정합니다.
+- notifications
+   - Travis CI 실행 완료 시 자동으로 알람이 가도록 설정합니다.
 
-   before_deploy
-   : deploy 명령어가 실행되기 전에 수행됩니다.
-   : CodeDeploy는 Jar 파일은 인식하지 못 하므로 Jar+기타 설정 파일들을 모아 압축(zip)합니다.
+- before_deploy
+   - deploy 명령어가 실행되기 전에 수행됩니다.
+   - CodeDeploy는 Jar 파일은 인식하지 못 하므로 Jar+기타 설정 파일들을 모아 압축(zip)합니다.
 
-   zip -r SpringWithAWS
-   : 현재 위치의 모든 파일을 SpringWithAWS 이름으로 압축(zip)합니다.
-   : 명령어의 마지막 위치는 본인의 프로젝트 이름이어야 합니다.
+- zip -r SpringWithAWS
+  - 현재 위치의 모든 파일을 SpringWithAWS 이름으로 압축(zip)합니다.
+  - 명령어의 마지막 위치는 본인의 프로젝트 이름이어야 합니다.
 
-   mkdir -p deploy
-   : deploy라는 디렉토리를 Travis CI가 실행 중인 위치에서 생성합니다.
+- mkdir -p deploy
+  -deploy라는 디렉토리를 Travis CI가 실행 중인 위치에서 생성합니다.
 
-   mv SpringWithAWS.zip deploy/SpringWithAWS.zip
-   : SpringWithAWS.zip 파일을 deploy/SpringWithAWS.zip으로 이동시킵니다.
+- mv SpringWithAWS.zip deploy/SpringWithAWS.zip
+     - SpringWithAWS.zip 파일을 deploy/SpringWithAWS.zip으로 이동시킵니다.
 
-   deploy
-   : S3로 파일 업로드 혹은 CodeDeploy로 배포 등 외부 서비스와 연동될 행위들을 선언합니다.
+- deploy
+     - S3로 파일 업로드 혹은 CodeDeploy로 배포 등 외부 서비스와 연동될 행위들을 선언합니다.
 
-   local_dir: deploy
-   : 앞에서 생성한 deploy 디렉토리를 지정합니다. 해당 위치의 파일들만 S3로 전송합니다.
+- local_dir: deploy
+     - 앞에서 생성한 deploy 디렉토리를 지정합니다. 해당 위치의 파일들만 S3로 전송합니다.
+
+3. appspec.yml
+- version: 0.0
+   - CodeDeploy의 버전을 이야기합니다.
+   - 프로젝트 버전이 아니므로 0.0 외에 다른 버전을 사용하면 오류가 발생합니	다.
+
+- source
+   - CodeDeploy에서 전달해 준 파일 중 destination으로 이동시킬 대상을 지정
+     합니다.
+   - 루트 경로(/)를 지정하면 전체 파일을 이야기합니다.
+
+- destination
+   - source에서 지정된 파일을 받을 위치입니다.
+   - 이후 Jar를 실행하는 등은 destination에서 옮긴 파일들로 진행됩니다.
+
+- overwrite
+   - 기존에 파일들이 있으면 덮어쓸지를 결정합니다.
+   - 현재 yes라고 했으니 파일들을 덮어쓰게 됩니다.
