@@ -327,7 +327,7 @@
 
 - script
    - master 브랜치에 푸시되었을 때 수행하는 명령어입니다.
-   - 여기서는 프로젝트 내부에 둔 gradlew을 통해 clean & build를 수행합니다.
+   - 여기서는 프로젝트 내부에 둔 gradlew을 통해 clean & build를 수행합니다. 
 
 - notifications
    - Travis CI 실행 완료 시 자동으로 알람이 가도록 설정합니다.
